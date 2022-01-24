@@ -1,0 +1,46 @@
+import numpy as np
+import matplotlib.pyplot as plt
+
+#creación de deslizadores
+AnchodeBanda = 251  #@param {type: "slider", min: 1, max: 1001, step: 50}
+AB= AnchodeBanda *pow(10,6)
+ValorRMS = 7  #@param {type: "slider", min: 1, max: 10, step: 1}
+RMS= ValorRMS * pow(10,-6)
+
+K = 1.38*pow(10,-23) 
+T = 298
+R = 1
+Ruidorms = np.sqrt(4*K*T*R*AB) 
+
+
+Tc = 10000
+ruido = Ruidorms*np.random.normal(0,1,Tc) 
+promedioruido = np.mean(ruido) 
+rmsruido = np.std(ruido)
+
+
+f = 1 * pow(10,6)
+T = 1/f
+t = np.linspace(0, 2*T,Tc) 
+señal = RMS*np.cos(2*np.pi*f*t) 
+promedioseñal = np.mean(señal + ruido) 
+rmsseñal = np.std(señal + ruido)
+
+fig, ax = plt.subplots(1, 2, figsize=(12,5)) 
+ax[0].plot(t, ruido, 'b', lw=2, label = 'Ruido')
+ax[0].plot([0,1], [promedioruido,promedioruido], 'g--' , label = 'Potencia Media')
+ax[0].plot([0,1], [rmsruido,rmsruido], 'r--', label = '$V_{rms}$')
+ax[0].set_xlim(0,2*T)
+ax[0].set_ylim(-20*pow(10,-6),20*pow(10,-6))
+ax[0].set_xlabel("Tiempo (s)", color='k')
+ax[0].set_ylabel("voltaje", color='k')
+
+
+ax[1].plot(t, señal + ruido, 'r', lw=2,  label = 'señal') 
+ax[1].plot([0,1], [promedioseñal,promedioseñal], 'g-.', label = 'Potencia media') 
+ax[1].plot([0,1], [rmsseñal,rmsseñal], color = 'b', linestyle = ':', lw=3, label = '$v_{rms}$')
+ax[1].set_xlim(0,2*T)
+ax[1].set_ylim(-2*pow(10,-5),2*pow(10,-5))
+ax[1].set_xlabel("Tiempo (s)", color='k')
+ax[1].set_ylabel("Voltaje", color='k')
+
